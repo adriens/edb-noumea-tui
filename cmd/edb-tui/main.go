@@ -26,6 +26,7 @@ const detailsURL = "https://raw.githubusercontent.com/adriens/edb-noumea-data/ma
 // You can extend this with more fields for navigation, filtering, etc.
 type Model struct {
 	sortEcoli         bool // tri des détails selon E. coli
+	sortEcoliDesc     bool // sens du tri E. coli (true=décroissant, false=croissant)
 	sortEnte          bool // tri des détails selon Enté.
 	data              [][]string
 	details           [][]string
@@ -44,7 +45,7 @@ type Model struct {
 
 func initialModel() Model {
 	now := time.Now()
-	return Model{logs: []string{}, showAbout: false, width: 80, height: 24, autoRefresh: true, lastRefresh: now, nextRefresh: now.Add(time.Hour), selectedDetailRow: 1, showLegendPopup: false, showStatsPopup: false, sortEcoli: false, sortEnte: false}
+	return Model{logs: []string{}, showAbout: false, width: 80, height: 24, autoRefresh: true, lastRefresh: now, nextRefresh: now.Add(time.Hour), selectedDetailRow: 1, showLegendPopup: false, showStatsPopup: false, sortEcoli: false, sortEcoliDesc: true, sortEnte: false}
 }
 
 // Charge les deux CSV en parallèle
@@ -92,8 +93,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		if msg.String() == "e" {
-			m.sortEcoli = !m.sortEcoli
-			m.sortEnte = false // désactive le tri Enté. si activé
+			m.sortEcoli = true
+			m.sortEcoliDesc = !m.sortEcoliDesc // inverse le sens du tri à chaque pression
+			m.sortEnte = false                 // désactive le tri Enté. si activé
 			return m, nil
 		}
 		if msg.String() == "n" {
@@ -308,7 +310,7 @@ func (m Model) View() string {
 			}
 			return strings.Join(lines, "\n")
 		}(enteScores, 400, 24)
-		statsText := "Histogramme E. coli (≤1000) :\n" + ecoliHisto + "\n\nHistogramme Enté. (≤400) :\n" + enteHisto + "\n\nAppuyez sur une touche pour fermer."
+		statsText := "Histogramme E. coli :\n" + ecoliHisto + "\n\nHistogramme Enté. :\n" + enteHisto + "\n\nAppuyez sur une touche pour fermer."
 		statsPopup := lipgloss.NewStyle().Border(lipgloss.DoubleBorder()).BorderForeground(lipgloss.Color("14")).Padding(2, 4).Align(lipgloss.Left).Width(m.width / 2).Height(m.height / 2).Render(statsText)
 		return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, statsPopup)
 	}
@@ -516,12 +518,21 @@ func (m Model) View() string {
 			}
 			if ecoliIdx != -1 {
 				dataRows := filtered[1:]
-				sort.Slice(dataRows, func(i, j int) bool {
-					ni, nj := 0, 0
-					fmt.Sscanf(dataRows[i][ecoliIdx], "%d", &ni)
-					fmt.Sscanf(dataRows[j][ecoliIdx], "%d", &nj)
-					return ni > nj
-				})
+				if m.sortEcoliDesc {
+					sort.Slice(dataRows, func(i, j int) bool {
+						ni, nj := 0, 0
+						fmt.Sscanf(dataRows[i][ecoliIdx], "%d", &ni)
+						fmt.Sscanf(dataRows[j][ecoliIdx], "%d", &nj)
+						return ni > nj
+					})
+				} else {
+					sort.Slice(dataRows, func(i, j int) bool {
+						ni, nj := 0, 0
+						fmt.Sscanf(dataRows[i][ecoliIdx], "%d", &ni)
+						fmt.Sscanf(dataRows[j][ecoliIdx], "%d", &nj)
+						return ni < nj
+					})
+				}
 				filtered = append([][]string{filtered[0]}, dataRows...)
 			}
 		}
@@ -633,7 +644,13 @@ func (m Model) View() string {
 			// Les index ne sont plus utilisés
 			for i, val := range detailRow {
 				label := filtered[0][i]
-				line := lipgloss.NewStyle().Bold(true).Render(label) + " : " + val
+				displayLabel := label
+				if label == "E. coli" {
+					displayLabel = "Escherichia coli"
+				} else if label == "Enté." {
+					displayLabel = "Entérocoques"
+				}
+				line := lipgloss.NewStyle().Bold(true).Render(displayLabel) + " : " + val
 				// Ajoute la barre colorée pour E. coli et Enté.
 				if label == "E. coli" || label == "Enté." {
 					n := 0
@@ -719,7 +736,13 @@ func (m Model) View() string {
 	introWidth := runewidth.StringWidth(renderedIntro)
 	totalWidth := m.width - 2
 	padLeftIntro := (totalWidth - introWidth) / 2
+	if padLeftIntro < 0 {
+		padLeftIntro = 0
+	}
 	padRightIntro := totalWidth - introWidth - padLeftIntro
+	if padRightIntro < 0 {
+		padRightIntro = 0
+	}
 	centeredIntro := strings.Repeat(" ", padLeftIntro) + renderedIntro + strings.Repeat(" ", padRightIntro)
 
 	// Titre centré façon btop
@@ -728,7 +751,13 @@ func (m Model) View() string {
 	renderedTitle := titleStyle.Render(appTitle)
 	titleWidth := runewidth.StringWidth(renderedTitle)
 	padLeft := (totalWidth - titleWidth) / 2
+	if padLeft < 0 {
+		padLeft = 0
+	}
 	padRight := totalWidth - titleWidth - padLeft
+	if padRight < 0 {
+		padRight = 0
+	}
 	centeredTitle := strings.Repeat(" ", padLeft) + renderedTitle + strings.Repeat(" ", padRight)
 
 	// Encapsule tout le contenu dans une box façon btop (sans la zone de log)
