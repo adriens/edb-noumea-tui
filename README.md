@@ -1,44 +1,36 @@
-# edb-noumea-go
 
-TUI pour consulter les données des eaux de baignade de Nouméa (CSV public).
+[
+	![Build with Taskfile.dev](https://img.shields.io/badge/build%20with-Taskfile.dev-blue?logo=task)
+](https://taskfile.dev/)
+
+
+# ❔ A propos
+
+TUI pour consulter la qualité les données des eaux de baignade de Nouméa...
+sans quitter son terminal... parce'que c'est cool.
 
 ## Prérequis
+
 - Go 1.21 ou supérieur (recommandé Go 1.24)
-- Accès à internet pour télécharger le CSV
+- Avoir [`task`](https://taskfile.dev/) installé
+- Accès à internet (pour télécharger le CSV)
 
-## Installation des dépendances
-
-Dans le dossier racine du projet :
-```sh
-go mod tidy
-```
 
 ## Compilation
 
 Dans le dossier du TUI :
 ```sh
-cd cmd/edb-tui
-# Compile le binaire
-go build -v
+task run
 ```
 
 ## Exécution
 
-Toujours dans `cmd/edb-tui` :
+
 ```sh
 # Lance l'application
-./edb-tui
+./edb
 ```
 
-Ou directement sans compilation préalable :
-```sh
-go run main.go
-```
-
-## Fonctionnalités
-- Téléchargement automatique du CSV des eaux de baignade
-- Affichage stylisé dans le terminal
-- Quitter avec `q` ou `Ctrl+C`
 
 ## Dépendances principales
 - [Bubbletea](https://github.com/charmbracelet/bubbletea) (TUI)
@@ -46,7 +38,3 @@ go run main.go
 
 ## Source des données
 - [CSV public](https://github.com/adriens/edb-noumea-data/tree/main/data)
-
----
-
-Pour toute amélioration ou bug, ouvrez une issue sur le dépôt.
