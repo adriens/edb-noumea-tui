@@ -23,6 +23,7 @@ vendor/
 
 # Taskfile checksum
 .task/
+.task/checksum/
 
 # OS files
 .DS_Store
