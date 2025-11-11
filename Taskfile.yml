@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  default:
+    desc: "Tâche par défaut : build le binaire edb"
+    cmds:
+      - task: build
+  build:
+    desc: "Compiler le binaire edb à partir du code source Go"
+    cmds:
+      - go build -o edb ./cmd/edb-tui
+    sources:
+      - cmd/edb-tui/*.go
+    generates:
+      - edb
+  run:
+    desc: "Lancer le binaire edb"
+    cmds:
+      - ./edb
+    deps:
+      - build
+  clean:
+    desc: "Supprimer le binaire edb généré"
+    cmds:
+      - rm -f edb
+task-default: build
