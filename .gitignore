@@ -1,0 +1,29 @@
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Binaries
+edb
+db-tui
+cmd/edb-tui/edb-tui
+
+# Dependency directories
+vendor/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Taskfile checksum
+.task/
+
+# OS files
+.DS_Store
+Thumbs.db
