@@ -28,6 +28,7 @@ type Model struct {
 	sortEcoli         bool // tri des détails selon E. coli
 	sortEcoliDesc     bool // sens du tri E. coli (true=décroissant, false=croissant)
 	sortEnte          bool // tri des détails selon Enté.
+	sortEnteDesc      bool // sens du tri Enté. (true=décroissant, false=croissant)
 	data              [][]string
 	details           [][]string
 	err               error
@@ -45,7 +46,7 @@ type Model struct {
 
 func initialModel() Model {
 	now := time.Now()
-	return Model{logs: []string{}, showAbout: false, width: 80, height: 24, autoRefresh: true, lastRefresh: now, nextRefresh: now.Add(time.Hour), selectedDetailRow: 1, showLegendPopup: false, showStatsPopup: false, sortEcoli: false, sortEcoliDesc: true, sortEnte: false}
+	return Model{logs: []string{}, showAbout: false, width: 80, height: 24, autoRefresh: true, lastRefresh: now, nextRefresh: now.Add(time.Hour), selectedDetailRow: 1, showLegendPopup: false, showStatsPopup: false, sortEcoli: false, sortEcoliDesc: true, sortEnte: false, sortEnteDesc: true}
 }
 
 // Charge les deux CSV en parallèle
@@ -99,8 +100,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		}
 		if msg.String() == "n" {
-			m.sortEnte = !m.sortEnte
-			m.sortEcoli = false // désactive le tri E. coli si activé
+			m.sortEnte = true
+			m.sortEnteDesc = !m.sortEnteDesc // inverse le sens du tri à chaque pression
+			m.sortEcoli = false              // désactive le tri E. coli si activé
 			return m, nil
 		}
 		if msg.String() == "n" {
@@ -547,12 +549,21 @@ func (m Model) View() string {
 			}
 			if enteIdx != -1 {
 				dataRows := filtered[1:]
-				sort.Slice(dataRows, func(i, j int) bool {
-					ni, nj := 0, 0
-					fmt.Sscanf(dataRows[i][enteIdx], "%d", &ni)
-					fmt.Sscanf(dataRows[j][enteIdx], "%d", &nj)
-					return ni > nj
-				})
+				if m.sortEnteDesc {
+					sort.Slice(dataRows, func(i, j int) bool {
+						ni, nj := 0, 0
+						fmt.Sscanf(dataRows[i][enteIdx], "%d", &ni)
+						fmt.Sscanf(dataRows[j][enteIdx], "%d", &nj)
+						return ni > nj
+					})
+				} else {
+					sort.Slice(dataRows, func(i, j int) bool {
+						ni, nj := 0, 0
+						fmt.Sscanf(dataRows[i][enteIdx], "%d", &ni)
+						fmt.Sscanf(dataRows[j][enteIdx], "%d", &nj)
+						return ni < nj
+					})
+				}
 				filtered = append([][]string{filtered[0]}, dataRows...)
 			}
 		}
