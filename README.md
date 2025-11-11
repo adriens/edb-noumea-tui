@@ -19,7 +19,7 @@ sans quitter son terminal... parce'que c'est cool.
 
 Dans le dossier du TUI :
 ```sh
-task run
+task
 ```
 
 ## Exécution
