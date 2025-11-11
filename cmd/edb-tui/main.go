@@ -313,10 +313,10 @@ func (m Model) View() string {
 		return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, statsPopup)
 	}
 	if m.showAbout {
-		aboutText := "\nDéveloppé par Adrien S.\nGitHub : https://github.com/adriens/edb-noumea-go\n\nScannez le QR code pour accéder au projet :\n"
+		aboutText := "\nDéveloppé par Adrien S.\nGitHub : https://github.com/adriens/edb-noumea-tui\n\nScannez le QR code pour accéder au projet :\n"
 		// Génère le QR code ASCII avec go-qrcode
 		qrText := ""
-		qr, err := qrcode.New("https://github.com/adriens/edb-noumea-go", qrcode.Medium)
+		qr, err := qrcode.New("https://github.com/adriens/edb-noumea-tui", qrcode.Medium)
 		if err != nil {
 			qrText = "[QR code non disponible]"
 		} else {
