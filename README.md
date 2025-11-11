@@ -1,7 +1,6 @@
+[![Build with Taskfile.dev](https://img.shields.io/badge/build%20with-Taskfile.dev-blue?logo=task)](https://taskfile.dev/)
 
-[
-	![Build with Taskfile.dev](https://img.shields.io/badge/build%20with-Taskfile.dev-blue?logo=task)
-](https://taskfile.dev/)
+![Demo TUI](./assets/edb-tui-demo.gif)
 
 
 # ❔ A propos
@@ -11,7 +10,7 @@ sans quitter son terminal... parce'que c'est cool.
 
 ## Prérequis
 
-- Go 1.21 ou supérieur (recommandé Go 1.24)
+- Go 1.23 ou supérieur (recommandé Go 1.24)
 - Avoir [`task`](https://taskfile.dev/) installé
 - Accès à internet (pour télécharger le CSV)
 
@@ -27,14 +26,15 @@ task run
 
 
 ```sh
-# Lance l'application
 ./edb
 ```
 
 
 ## Dépendances principales
+
 - [Bubbletea](https://github.com/charmbracelet/bubbletea) (TUI)
 - [Lipgloss](https://github.com/charmbracelet/lipgloss) (styles)
 
 ## Source des données
-- [CSV public](https://github.com/adriens/edb-noumea-data/tree/main/data)
+
+- [`github.com/adriens/edb-noumea-data`](https://github.com/adriens/edb-noumea-data)
