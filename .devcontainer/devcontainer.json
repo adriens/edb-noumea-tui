@@ -1,6 +1,0 @@
-{
-  "name": "Go & Task Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/go:latest",
-  "features": {},
-  "postCreateCommand": "npm install -g @go-task/cli"
-}
