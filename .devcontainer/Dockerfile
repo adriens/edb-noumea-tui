@@ -2,7 +2,10 @@
 # Installs Task CLI globally for all users
 FROM mcr.microsoft.com/devcontainers/go:latest
 
-# Install Task CLI
-RUN npm install -g @go-task/cli
+
+# Install Node.js (LTS) and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
+	apt-get install -y nodejs && \
+	npm install -g @go-task/cli
 
 # ...other setup steps as needed...
