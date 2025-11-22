@@ -1,7 +1,8 @@
 [![Build with Taskfile.dev](https://img.shields.io/badge/build%20with-Taskfile.dev-blue?logo=task)](https://taskfile.dev/)
 [![Live CSV Data](https://img.shields.io/badge/GitHub-Live%20CSV%20Data-black?logo=github)](https://github.com/adriens/edb-noumea-data)
 
-![Demo TUI](./assets/edb-tui-demo.gif)
+[![Demo TUI](./assets/edb-tui-demo.gif)](https://youtu.be/SX09XdaX-kU)
+
 
 
 # ❔ A propos
